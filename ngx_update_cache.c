@@ -1,8 +1,5 @@
 /**
  * This program updates Nginx cache objects on version 1.6 format to version 1.8 format.
- *
- * Compile it with:
- *    gcc -std=gnu99 -Wall -Wextra -O3 -fno-omit-framepointer -g -o back_to_the_future back_to_the_future.c
  */
 
 #include <stdio.h>
