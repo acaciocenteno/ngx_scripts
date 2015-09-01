@@ -126,7 +126,7 @@ print_cache_header(const char *fname, char *buf, size_t sz_buf)
 
     for (   key=memchr(ptr, '\n', sz_buf);
             key;
-            ptr=key + 1, key=memchr(ptr, '\n', sz_buf)
+            ptr=key + 1, key=memchr(ptr, '\n', sz_buf - (ptr - buf))
         )
     {
         if ( strncasecmp(key + 1, "key: ", 5) == 0 )
@@ -154,8 +154,9 @@ print_cache_header(const char *fname, char *buf, size_t sz_buf)
 static inline int
 list_file(const char *fname)
 {
-    int  fd;
-    char buf[4096];
+    int    fd;
+    char   buf[4096];
+	int    avail;
 
     if ( (fd=open(fname, O_RDONLY)) < 0 ) {
         fprintf(stderr, "Could not open: %s. ", fname);
@@ -163,13 +164,13 @@ list_file(const char *fname)
         return 2;
     }
 
-    if ( read(fd, &buf, sizeof(buf)) < 0 ) {
+    if ( (avail=read(fd, &buf, sizeof(buf))) < 0 ) {
         fprintf(stderr, "Could not read: %s. ", fname);
         perror("Reason");
         return 3;
     }
 
-    print_cache_header(fname, buf, sizeof(buf));
+    print_cache_header(fname, buf, avail);
     close(fd);
 
     return 0;
